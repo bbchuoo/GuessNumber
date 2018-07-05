@@ -3,6 +3,7 @@ var GuessNumberLayer = cc.Layer.extend({
     sprite:null,
     guessnumber:null,
     dx:3,
+    nums:new Array(10),
 
     ctor:function () {
         this._super();
@@ -38,6 +39,18 @@ var GuessNumberLayer = cc.Layer.extend({
         title.x += this.dx;
 
     },
+    Img:function(){
+
+        var frameCache = cc.spriteFrameCache;
+        frameCache.addSpriteFrames(res.number.plist,res.number.png);
+        for(var i=0;i < this.nums.length ; i ++){
+        this.num[i] = new cc.Sprite("#number"+i+".png");
+        if()
+        }
+    }
+
+
+    ,
 });
 
 var GuessNumberScene = cc.Scene.extend({
