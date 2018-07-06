@@ -125,7 +125,7 @@ var GuessNumberLayer = cc.Layer.extend({
         this.input.y = cc.winSize.height * 6 / 8;
         this.addChild(this.input);
 
-        this.mesg = new cc.LabelTTF("輸入三位數", "", 48);
+        this.mesg = new cc.LabelTTF("輸入三位數~~~", "", 48);
         this.mesg.x = cc.winSize.width * 3 / 6;
         this.mesg.y = cc.winSize.height * 5 / 8;
         this.addChild(this.mesg);
