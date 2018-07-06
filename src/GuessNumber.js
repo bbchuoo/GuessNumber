@@ -11,6 +11,8 @@ var GuessNumberLayer = cc.Layer.extend({
     backrect:null,
     guess:"",
     counter:0,
+    isRun:true,
+    answer: createAnswer(3),
 
 
     ctor:function () {
@@ -98,8 +100,8 @@ var GuessNumberLayer = cc.Layer.extend({
         this.addChild(this.enter);
 
         this.enterrect = new cc.Rect(
-            this.enter.x - this.enter.width,
-            this.enter.y - this.enter.height,
+            this.enter.x - this.enter.width/2,
+            this.enter.y - this.enter.height/2,
             this.enter.width,
             this.enter.height
         );
@@ -111,8 +113,8 @@ var GuessNumberLayer = cc.Layer.extend({
         this.addChild(this.back);
 
         this.backrect = new cc.Rect(
-            this.back.x - this.back.width,
-            this.back.y - this.back.height,
+            this.back.x - this.back.width/2,
+            this.back.y - this.back.height/2,
             this.back.width,
             this.back.height
         );
@@ -151,21 +153,43 @@ var GuessNumberLayer = cc.Layer.extend({
                         return;
                     }
                 }
-                // if(target.guess.length ==  3){
-                //     if(cc.rectContainsPoint(target.enterrect,p)){
-                //
-                //     }
+                if(target.guess.length ==  3) {
+                    if (cc.rectContainsPoint(target.enterrect, p)) {
+                        var result = checkAB(target.answer, target.guess);
+                        target.counter++;
+                        target.guess = '';
+                        cc.log(target.answer);
 
-
-                //讓0~~9案下去會輸入
-                for(var i=0;i < target.rects.length ; i ++){
-                    if(cc.rectContainsPoint(target.rects[i],p)){
-                        target.guess +=i;
-                        target.input.setString(target.guess);
-                        break;
-
+                        if (result === "3A0B") {
+                            target.isRun = true;
+                        }
+                        else if (target.counter == 10) {
+                            target.mesg.setString("Loser:" + target.answer);
+                            target.isRun = false;
+                        }
+                        else {
+                            target.mesg.setString(result);
+                        }
                     }
                 }
+
+                else{
+                    //讓0~~9案下去會輸入
+                    for(var i=0;i < target.rects.length ; i ++){
+                        if(cc.rectContainsPoint(target.rects[i],p)){
+                            target.guess +=i;
+                            target.input.setString(target.guess);
+                            break;
+
+                        }
+                    }
+                }
+
+
+
+
+
+
 
 
 
@@ -190,26 +214,53 @@ var GuessNumberScene = cc.Scene.extend({
         this.addChild(layer);
     }
 });
-
+// 創建三個隨機數字出問題
+// 上面呼叫的時候把參數傳進去了 參數d是3
 function createAnswer(d){
     var n = [0,1,2,3,4,5,6,7,8,9];
     n = shuffle(n);
-
-    return
+    var  r = "";
+    for(var i =0;i<d;i++){
+        r+= n[i]; //因為每次的陣列都透過shuffle()打亂了
+        // 所以我抽出的 n[0] n[1] n[2]都不一樣
+    }
+    return r;
 };
+
+//打亂陣列的方法
+//用 a.length = 10跑迴圈
+//
 
 function shuffle(a){
 
     var i;
-
+    //a.length=10 陣列是從第0項開始數
+    //所以第一次的i-1就是再說a[9] 也就是 n[9]
     for(i=a.length;i;i--){
        var randow = parseInt((Math.random()*i));
-        var x = a[i-1];
-        a[i-1] = a[randow];
-        a[randow] = x;
+        var x = a[i-1]; // 假設現在是跑第一圈 i=10 x=a[9]
+        a[i-1] = a[randow]; // 把0~9的亂數存到 最後一項
+        a[randow] = x; // 然後再把原本的a[9]放進去亂數那一項(交換位置的意思)
     }
     return a;
 };
+ function checkAB (ans,guess){
+     var a =0; //這裡的AB代表幾A幾B 總共有三次 0 1 2
+     var b =0;
+     for(var i =0;i<guess.length;i++){
+         //charAt表示字串符中的某個位置
+         //如果第一個 第二個 或第三個的問題==使用者的答案
+         //a++
+         if(ans.charAt(i) == guess.charAt(i)){
+             a++
+         }
+         //indexOf返回某個指定的字符串值在字符串中首次出現的位置
+         else if (ans.indexOf(guess.charAt(i)) !== -1){
+             b++
+         }
+     }
+     return a  + "A" + b + "B"; // return回傳代表函式結束 回傳到呼叫的地方
+ }
 
 
 
