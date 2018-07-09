@@ -96,7 +96,7 @@ cc.game.onStart = function(){
 
     //load resources
     cc.LoaderScene.preload(g_resources, function () {
-        cc.director.runScene(new GuessNumberScene());
+        cc.director.runScene(new GuessNumber2Scene());
     }, this);
 };
 cc.game.run();
